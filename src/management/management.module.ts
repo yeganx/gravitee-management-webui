@@ -147,12 +147,9 @@ import DialogAddMemberApiController from '../management/api/portal/userGroupAcce
 import DialogTransferApiController from '../management/api/portal/userGroupAccess/transferOwnership/transferAPIDialog.controller';
 import DialogApiKeyExpirationController from '../management/api/portal/subscriptions/apikey.expiration.dialog.controller';
 import DialogEditPolicyController from '../management/api/design/policies/dialog/policyDialog.controller';
-import DocumentationDirective from '../management/api/portal/documentation/pages/apiDocumentation.directive';
-import DocumentationController from '../management/api/portal/documentation/pages/apiDocumentation.controller';
-import DocumentationService from '../services/apiDocumentation.service';
+import DocumentationService from '../services/documentation.service';
 import NotificationService from '../services/notification.service';
 
-import PageController from '../management/api/portal/documentation/pages/page/apiPage.controller';
 import PolicyService from '../services/policy.service';
 import ResourceService from '../services/resource.service';
 import FetcherService from '../services/fetcher.service';
@@ -299,11 +296,6 @@ import UpdateApiMetadataDialogController from './api/portal/documentation/metada
 import DeleteApiMetadataDialogController from './api/portal/documentation/metadata/dialog/delete.api.metadata.dialog.controller';
 import NewApiMetadataDialogController from './api/portal/documentation/metadata/dialog/new.api.metadata.dialog.controller';
 
-import PortalPagesComponent from '../management/configuration/pages/portalPages.component';
-import PortalPagesController from '../management/configuration/pages/portalPages.controller';
-import NewPageController from '../management/configuration/pages/page/newPage.controller';
-import PortalPagesService from '../services/portalPages.service';
-
 import RoleComponent from './configuration/roles/role/role.components';
 import RoleMembersComponent from './configuration/roles/role/role.members.component';
 import RolesComponent from '../management/configuration/roles/roles.component';
@@ -342,12 +334,16 @@ import NotificationSettingsComponent from './components/notifications/notificati
 import NotificationSettingsService from "../services/notificationSettings.service";
 
 // Documentation
-import PageComponent from '../components/documentation/page.component';
-import PageSwaggerComponent from '../components/documentation/page-swagger.component';
-import PageMarkdownComponent from '../components/documentation/page-markdown.component';
-import PageEditorMarkdownComponent from '../components/documentation/page-editormarkdown.component';
-import PageEditorMarkdownViewerComponent from '../components/documentation/page-editormarkdown-viewer.component';
-import PageSidenavDirective from '../components/documentation/page-sidenav.directive';
+import DocumentationManagementComponent
+  from './components/documentation/documentation-management.component';
+import PageComponent from '../components/documentation/page/page.component';
+import PageSwaggerComponent from '../components/documentation/page/page-swagger.component';
+import PageMarkdownComponent from '../components/documentation/page/page-markdown.component';
+import PageEditorMarkdownComponent from '../components/documentation/page/page-editormarkdown.component';
+import PageEditorMarkdownViewerComponent from '../components/documentation/page/page-editormarkdown-viewer.component';
+import PageSidenavDirective from '../components/documentation/page/page-sidenav.directive';
+import NewPageComponent from "./components/documentation/new-page.component";
+import EditPageComponent from "./components/documentation/edit-page.component";
 
 // Healthcheck
 import ApiHealthCheckConfigureController from '../management/api/proxy/backend/healthcheck/healthcheck-configure.controller';
@@ -446,6 +442,8 @@ import AlertService from '../services/alert.service';
 import AlertComponent from './components/notifications/alert/alert.component';
 import DialogAddAlertController from './components/notifications/alert/addAlert.dialog.controller';
 
+import MoveToFolderDialogController from "./components/documentation/movetofolder.controller";
+
 angular.module('gravitee-management', [uiRouter, permission, uiPermission, 'ngMaterial', 'ng-showdown',
   'ngMdIcons', 'ui.codemirror', 'md.data.table', 'ngCookies', 'dragularModule', 'readMore',
   'ngMessages', 'vAccordion', 'schemaForm', 'ngclipboard', 'ui.validate', 'angular-timeline',
@@ -521,11 +519,9 @@ angular.module('gravitee-management', [uiRouter, permission, uiPermission, 'ngMa
   .controller('DialogTransferApiController', DialogTransferApiController)
   .controller('DialogApiKeyExpirationController', DialogApiKeyExpirationController)
   .controller('UserController', UserController)
-  .controller('DocumentationController', DocumentationController)
   .controller('DialogApiImportController', DialogApiImportController)
   .controller('DialogApiExportController', DialogApiExportController)
   .controller('DialogEditPolicyController', DialogEditPolicyController)
-  .controller('PageController', PageController)
   .controller('LoginController', LoginController)
   .controller('InstancesController', InstancesController)
   .controller('InstanceEnvironmentController', InstanceEnvironmentController)
@@ -562,14 +558,13 @@ angular.module('gravitee-management', [uiRouter, permission, uiPermission, 'ngMa
   .controller('DialogConfirmController', DialogConfirmController)
   .controller('DialogDynamicProviderHttpController', DialogDynamicProviderHttpController)
   .controller('DialogAddUserRoleController', DialogAddUserRoleController)
-  .controller('PortalPagesController', PortalPagesController)
-  .controller('NewPageController', NewPageController)
   .controller('SupportTicketController', SupportTicketController)
   .controller('AuditController', AuditController)
   .controller('ApiAuditController', ApiAuditController)
   .controller('TopApisController', TopApisController)
   .controller('AddTopApiDialogController', AddTopApiDialogController)
   .controller('DeleteTopApiDialogController', DeleteTopApiDialogController)
+  .controller("MoveToFolderDialogController", MoveToFolderDialogController)
   .service('ApplicationService', ApplicationService)
   .service('ApiService', ApiService)
   .service('DocumentationService', DocumentationService)
@@ -588,7 +583,6 @@ angular.module('gravitee-management', [uiRouter, permission, uiPermission, 'ngMa
   .service('TagService', TagService)
   .service('MetadataService', MetadataService)
   .service('TenantService', TenantService)
-  .service('PortalPagesService', PortalPagesService)
   .service('StringService', StringService)
   .service('AuthenticationService', AuthenticationService)
   .service('RoleService', RoleService)
@@ -598,7 +592,6 @@ angular.module('gravitee-management', [uiRouter, permission, uiPermission, 'ngMa
   .service('TopApiService', TopApiService)
   .service('MessageService', MessageService)
 
-  .directive('filecontent', () => DocumentationDirective)
   .directive('noDirtyCheck', () => new FormDirective())
   .directive('autofocus', () => new AutofocusDirective())
   .directive('graviteeDiff', () => DiffDirective)
@@ -616,7 +609,6 @@ angular.module('gravitee-management', [uiRouter, permission, uiPermission, 'ngMa
   .component('view', ViewComponent)
   .component('tenants', TenantsComponent)
   .component('tags', TagsComponent)
-  .component('portalPages', PortalPagesComponent)
   .component('metadata', MetadataComponent)
   .component('roles', RolesComponent)
   .component('role', RoleComponent)
@@ -692,6 +684,9 @@ angular.module('gravitee-management', [uiRouter, permission, uiPermission, 'ngMa
   .component('notificationSettingsComponent', NotificationSettingsComponent)
   .component('notificationsComponent', NotificationsComponent)
 
+  .component('documentationManagement', DocumentationManagementComponent)
+  .component('newPage', NewPageComponent)
+  .component('editPage', EditPageComponent)
   .component('gvPage', PageComponent)
   .component('gvPageMarkdown', PageMarkdownComponent)
   .component('gvPageEditorMarkdown', PageEditorMarkdownComponent)
