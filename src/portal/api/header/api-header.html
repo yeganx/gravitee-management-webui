@@ -42,7 +42,13 @@
   </div>
   <div id="header-metadata" class="api-header-metadata">
     <ul class="api-description" style="white-space: nowrap; padding-left: 0;" layout="column">
-      <li ng-repeat="header in $ctrl.apiPortalHeaders" ng-if="header.value">{{ header.name | translate }}: {{::header.value}}</li>
+      <li ng-repeat="header in $ctrl.apiPortalHeaders" ng-if="header.value">
+        {{ header.name | translate }}:
+        <span ng-if="header.name === 'api.endpoint'" ng-repeat="entrypoint in $ctrl.getEntrypointsByTags()">
+          {{::entrypoint}}{{::header.value}} {{$last?'':' | '}}
+        </span>
+        <span ng-if="header.name !== 'api.endpoint'">{{ header.name | translate }}: {{::header.value}}</span>
+      </li>
     </ul>
     <div ng-if="$ctrl.Constants.portal.apis.apiHeaderShowTags.enabled && $ctrl.api.tags.length > 0">
       <h2>{{ 'api.header.tags' | translate }}</h2>
