@@ -45,6 +45,7 @@ const ApiSubscriptionsComponent: ng.IComponentOptions = {
     private status = {
       'ACCEPTED': 'Accepted',
       'CLOSED': 'Closed',
+      'PAUSED': 'Paused',
       'PENDING': 'Pending',
       'REJECTED': 'Rejected'
     };
