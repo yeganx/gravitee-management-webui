@@ -297,6 +297,29 @@ function apisPortalRouterConfig($stateProvider) {
         }
       }
     })
+    .state('management.apis.detail.portal.importdocumentation', {
+      url: '/documentation/import',
+      component: 'importPages',
+      resolve: {
+        resolvedFetchers: (FetcherService: FetcherService) => {
+          return FetcherService.list().then(response => {
+            return response.data;
+          })
+        },
+        resolvedRootPage: (DocumentationService: DocumentationService, $stateParams: StateParams) => {
+          const q = new DocumentationQuery();
+          q.type = "ROOT";
+          return DocumentationService.search(q, $stateParams.apiId)
+            .then(response => response.data && response.data.length > 0 ? response.data[0] : null);
+        }
+      },
+      data: {
+        menu: null,
+        perms: {
+          only: ['api-documentation-c']
+        }
+      }
+    })
     .state('management.apis.detail.portal.editdocumentation', {
       url: '/documentation/:pageId',
       component: 'editPage',

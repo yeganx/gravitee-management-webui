@@ -38,11 +38,11 @@ class DocumentationService {
     'ngInject';
   }
 
-  url = (apiId: string, pageId?: string): string => {
+  url = (apiId: string, pageId?: string, importFiles?: boolean): string => {
     if (apiId) {
-      return `${this.Constants.baseURL}apis/${apiId}/pages/` + (pageId ? pageId : '');
+      return `${this.Constants.baseURL}apis/${apiId}/pages/` + (importFiles?'_import':'') + (pageId ? pageId : '');
     }
-    return `${this.Constants.baseURL}portal/pages/` + (pageId ? pageId : '');
+    return `${this.Constants.baseURL}portal/pages/` + (importFiles?'_import':'') + (pageId ? pageId : '');
 
   };
 
@@ -55,7 +55,6 @@ class DocumentationService {
     prop[propKey] = propValue;
     return this.$http.patch(this.url(apiId, pageId), prop);
   };
-
 
   search = (q: DocumentationQuery, apiId?: string): IHttpPromise<any> => {
     let url: string = this.url(apiId);
@@ -125,6 +124,10 @@ class DocumentationService {
       .catch( msg => deferred.reject(msg) );
 
     return deferred.promise;
+  }
+
+  import(newPage: any, apiId?: string): IHttpPromise<any> {
+    return this.$http.post(this.url(apiId, null, true), newPage);
   }
 }
 

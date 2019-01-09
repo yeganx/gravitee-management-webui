@@ -16,7 +16,12 @@
 
 -->
 <div class="gv-forms gv-forms-fluid" layout="column">
-    <h1>Documentation</h1>
+    <div class="gv-forms-header">
+        <h1>Documentation</h1>
+        <span permission permission-only="['portal-documentation-c', 'api-documentation-c']">
+            <ng-md-icon icon="settings" ng-click="$ctrl.importPages()"></ng-md-icon>
+        </span>
+    </div>
     <div class="gv-form">
         <div layout="row" layout-align="space-between center" ng-if="!renameFolder">
             <h2>

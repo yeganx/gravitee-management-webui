@@ -251,6 +251,29 @@ function configurationRouterConfig($stateProvider) {
         }
       }
     })
+    .state('management.settings.importdocumentation', {
+      url: '/pages/import',
+      component: 'importPages',
+      resolve: {
+        resolvedFetchers: (FetcherService: FetcherService) => {
+          return FetcherService.list().then(response => {
+            return response.data;
+          })
+        },
+        resolvedRootPage: (DocumentationService: DocumentationService) => {
+          const q = new DocumentationQuery();
+          q.type = "ROOT";
+          return DocumentationService.search(q)
+            .then(response => response.data && response.data.length > 0 ? response.data[0] : null);
+        }
+      },
+      data: {
+        menu: null,
+        perms: {
+          only: ['portal-documentation-c']
+        }
+      }
+    })
     .state('management.settings.editdocumentation', {
       url: '/pages/:pageId',
       component: 'editPage',

@@ -41,6 +41,9 @@ const DocumentationManagementComponent: ng.IComponentOptions = {
     this.apiId = $state.params.apiId;
 
     this.$onInit = () => {
+      // remove the ROOT page
+      this.pages = _.filter(this.pages, (p) => p.type !== 'ROOT');
+
       this.rootDir = $state.params.parent;
       this.supportedTypes = DocumentationService.supportedTypes();
       this.foldersById = _.keyBy(this.folders, 'id');
@@ -218,6 +221,14 @@ const DocumentationManagementComponent: ng.IComponentOptions = {
         } else {
           $state.go('management.settings.editdocumentation', {pageId: page.id});
         }
+      }
+    };
+
+    this.importPages = () => {
+      if (this.apiId) {
+        $state.go('management.apis.detail.portal.importdocumentation', {apiId: this.apiId});
+      } else {
+        $state.go('management.settings.importdocumentation');
       }
     };
   }
