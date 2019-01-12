@@ -1,0 +1,91 @@
+<!--
+
+    Copyright (C) 2015 The Gravitee team (http://gravitee.io)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="gv-forms" layout="column">
+  <h1>Sharding Tags</h1>
+  <blockquote>
+    <p style="font-size: 12px">
+      <ng-md-icon icon="info"  style="fill:grey;"></ng-md-icon>
+      Copy/paste the ID to the API gateway configuration file in order to manage API deployments.
+    </p>
+  </blockquote>
+
+  <div class="gv-form">
+    <h2>Details</h2>
+    <div class="gv-form-content" layout="column">
+<md-table-container>
+  <table md-table ng-init="order = 'name'">
+    <thead md-head md-order="order">
+    <tr md-row>
+      <th md-column md-order-by="id">ID
+      </th>
+      <th md-column md-order-by="name">Name</th>
+      <th md-column md-order-by="description">Description</th>
+      <th permission permission-only="'management-tag-d'"></th>
+    </tr>
+    </thead>
+    <tbody md-body>
+    <tr md-row ng-repeat="tag in $ctrl.tags | orderBy: order" ng-mouseover="hovered = true && tag.id" ng-mouseout="hovered = false">
+      <td md-cell>
+        {{tag.id}}
+        <span style="position: absolute">
+            <md-tooltip md-direction="right">Copy to clipboard</md-tooltip>
+            <ng-md-icon ng-show="hovered" ng-hide="!hovered" icon="link"
+                        ngclipboard data-clipboard-text="{{tag.id}}"
+                        ngclipboard-success="$ctrl.onClipboardSuccess(e);"
+                        role="button" ></ng-md-icon>
+        </span>
+      </td>
+      <td permission permission-only="'management-tag-u'"
+          md-cell ng-click="$ctrl.editName($event, tag)" ng-class="{'gravitee-placeholder': !tag.name}">
+        {{tag.name || 'Add a name'}}
+      </td>
+      <td permission permission-only="'management-tag-u'"
+          md-cell ng-click="$ctrl.editDescription($event, tag)" ng-class="{'gravitee-placeholder': !tag.description}">
+        {{tag.description || 'Add a description'}}
+      </td>
+      <td permission permission-except="'management-tag-u'">
+        {{tag.name}}
+      </td>
+      <td permission permission-except="'management-tag-u'">
+        {{tag.description}}
+      </td>
+      <td md-cell permission permission-only="'management-tag-d'"><ng-md-icon icon="delete" ng-click="$ctrl.deleteTag(tag)"></ng-md-icon></td>
+    </tr>
+    <tr md-row permission permission-only="'management-tag-c'">
+      <td md-cell></td>
+      <td md-cell ng-click="$ctrl.newTag($event)" class="gravitee-placeholder">
+        New tag
+      </td>
+      <td md-cell></td>
+      <td md-cell></td>
+    </tr>
+    </tbody>
+  </table>
+</md-table-container>
+
+<div permission permission-only="['management-tag-c', 'management-tag-u']">
+  <md-button ng-click="$ctrl.saveTags()"
+             ng-disabled="!$ctrl.tagsToCreate.length && !$ctrl.tagsToUpdate.length"
+             class="md-raised md-primary">Save</md-button>
+  <md-button ng-click="$ctrl.reset()"
+             ng-disabled="!$ctrl.tagsToCreate.length && !$ctrl.tagsToUpdate.length"
+             class="md-raised">Reset</md-button>
+</div>
+    </div>
+  </div>
+</div>
